@@ -8,10 +8,12 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.PairFunction;
 import org.apache.spark.graphx.Edge;
+import org.apache.spark.graphx.Graph;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.RowFactory;
+import org.apache.spark.storage.StorageLevel;
 import scala.Tuple2;
 import scala.reflect.ClassTag;
 import scala.reflect.ClassTag$;
@@ -53,7 +55,7 @@ public static void main(String[] args) {
         //print the vertex_rdd
         vertex_rdd.foreach(new SerializableFunction1<Tuple2<java.lang.Long, String>, BoxedUnit>() {
             public BoxedUnit apply(Tuple2<java.lang.Long, String> v1) {
-                System.out.print(v1.toString());
+                System.out.println(v1.toString());
                 return BoxedUnit.UNIT;
             }
         });
@@ -72,21 +74,26 @@ public static void main(String[] args) {
         //print the edge_rdd
         edge_rdd.foreach(new SerializableFunction1<Edge<String>, BoxedUnit>() {
             public BoxedUnit apply(Edge<String> v1) {
-                System.out.print(v1.toString());
+                System.out.println(v1.toString());
                 return BoxedUnit.UNIT;
             }
         });
-        //graph = Graph.fromEdges(edge_rdd,new Edge<String>(0,0,"defaultValue"), StorageLevel.MEMORY_ONLY(),StorageLevel.MEMORY_ONLY(),classtagedge,classtagstring);
+        Graph graph = Graph.fromEdges(edge_rdd,new Edge<String>(0,0,"defaultValue"), StorageLevel.MEMORY_ONLY(), StorageLevel.MEMORY_ONLY(),classtagedge,classtagstring);
 
     } catch (Exception e) {
         System.out.print(e);
     }
 }
+//map Long id with the edge rdd sources and destinations
 private static Long getLongIdForVertex(List<Tuple2<Long,String>> vartexlist,String str){
     Long kk = 0L;
     for (int i = 0; i < vartexlist.size(); i++) {
         Tuple2<Long,String> hh = vartexlist.get(i);
-        if(hh._2()==str){
+        //System.out.println(hh._1());
+        //System.out.println(hh._2());
+        //System.out.println(str);
+        String ll = hh._2();
+        if(ll.trim().compareTo(str.trim())==0){
             kk = hh._1();
             break;
         }
