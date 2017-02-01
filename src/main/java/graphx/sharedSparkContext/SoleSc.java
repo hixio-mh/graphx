@@ -28,7 +28,7 @@ public class SoleSc {
                 .format("com.databricks.spark.csv")
                 .schema(customSchema)
                 .option("header", "true")
-                .load("/home/wso2/graph_data.csv");
+                .load("/home/wso2/graphdata/graph_data.csv");
         return dataframe;
     }
     public static DataFrame getEdgeDataFrame(){
@@ -40,11 +40,11 @@ public class SoleSc {
                 .format("com.databricks.spark.csv")
                 .schema(customSchema)
                 .option("header", "true")
-                .load("/home/wso2/edge_data.csv");
+                .load("/home/wso2/graphdata/edge_data.csv");
         return dataframe;
     }
 
-    DataFrame dataframe = sqlCtx.load("/home/wso2/graph_data.txt");
+    //DataFrame dataframe = sqlCtx.load("/home/wso2/graphdata/graph_data.txt");
     public JavaSparkContext getSparkContext(){
         return this.sparkContext;
     }

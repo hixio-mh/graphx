@@ -18,7 +18,11 @@ import java.util.Map;
  * Created by wso2 on 17/1/17.
  */
 public class SharedSC {
-    private JavaSparkContext sparkContext = new JavaSparkContext(SparkContext.getOrCreate());
+    private JavaSparkContext sparkContext ;
+    public SharedSC(){
+
+        this.sparkContext=new JavaSparkContext(SparkContext.getOrCreate());
+    }
 
     public static DataFrame getVertexDataFrame(String tableName, int tenantId, JavaSparkContext sparkContext)
             throws AnalyticsTableNotAvailableException, AnalyticsException {
