@@ -25,7 +25,7 @@ public class MinePatterns {
     private Tuple2<String,String>[] solutionids;
     private List<Tuple2<Object,String>> vertexlist;
 
-    public MinePatterns(final String[] str, Graph graph, List<Long> idList, Tuple2<String,String>[] solutionids, List<Tuple2<Object,String>> vertexlist){
+    public MinePatterns(String[] str, Graph graph, List<Long> idList, Tuple2<String,String>[] solutionids, List<Tuple2<Object,String>> vertexlist){
         this.str = str;
         this.graph = graph;
         this.idList = idList;
@@ -45,23 +45,29 @@ public class MinePatterns {
 
         JsonObject finalArnswer = new JsonObject();
         JsonObject solutions = new JsonObject();
+        String kk = "";
 
         for(int i=0; i<idList.size()-1; i++){
             if(this.getMappingNeighbour(idList.get(i),idList.get(i+1))){
                 temp.add(str[i]);
-                innerLoop:for(Tuple2<String,String> ff : solutionids){
-                    if(ff._1().equals(str[i+1])){
-                        minedSolutions.add(ff._2());
+                kk = kk+temp.toString()+"@@@";
+                innerLoop:for(Tuple2<String,String> ids : solutionids){
+                    if(ids._1().trim().equals(str[i+1])){
+                        minedSolutions.add(ids._2());
                         ending_vertex_ids.add(str[i+1]);
                         temp.add(str[i+1]);
+                        kk = kk+temp.toString()+"#####";
                         minedPatterns.add(temp.toString());
                         temp.remove(temp.size()-1);
                         break innerLoop;
                     }
                 }
+                continue;
             }
             else{
                 temp.clear();
+                kk = kk+">>>>";
+                continue;
             }
         }
         String minedSolutionsJson = new Gson().toJson(minedSolutions);
@@ -77,7 +83,7 @@ public class MinePatterns {
     }
     public Boolean getMappingNeighbour(Long srcId,Long destId){
         for(int i=0; i<neighboursOfAllVetexesAsTupleArray[Integer.parseInt(srcId.toString())]._2().length; i++){
-            if(((Number)neighboursOfAllVetexesAsTupleArray[1]._2()[i]._1()).longValue() == destId){
+            if(((Number)neighboursOfAllVetexesAsTupleArray[Integer.parseInt(srcId.toString())]._2()[i]._1()).longValue() == destId){
                 return true;
             }
         }
