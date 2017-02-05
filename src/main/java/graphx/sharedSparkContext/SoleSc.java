@@ -43,8 +43,19 @@ public class SoleSc {
                 .load("/home/wso2/graphdata/edge_data.csv");
         return dataframe;
     }
+    public static DataFrame getSolutionsWithVertex(){
+        StructType customSchema = new StructType(new StructField[] {
+                new StructField("solution_id", DataTypes.StringType, true, Metadata.empty()),
+                new StructField("ending_vertex", DataTypes.StringType, true, Metadata.empty())
+        });
+        DataFrame dataframe = sqlCtx.read()
+                .format("com.databricks.spark.csv")
+                .schema(customSchema)
+                .option("header", "true")
+                .load("/home/wso2/graphdata/solution_id_with_vertex.csv");
+        return dataframe;
+    }
 
-    //DataFrame dataframe = sqlCtx.load("/home/wso2/graphdata/graph_data.txt");
     public JavaSparkContext getSparkContext(){
         return this.sparkContext;
     }
