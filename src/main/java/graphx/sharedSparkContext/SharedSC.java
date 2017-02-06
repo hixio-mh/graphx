@@ -69,7 +69,7 @@ public class SharedSC {
             throws AnalyticsTableNotAvailableException, AnalyticsException {
         String tableSchema = extractTableSchema(tableName, tenantId);
         SQLContext sqlCtx = new SQLContext(sparkContext);
-        sqlCtx.sql("CREATE TEMPORARY TABLE SOLUTION_IDS_WITH_ENDING_VERTEX USING org.wso2.carbon.analytics.spark.core.sources.AnalyticsRelationProvider "
+        sqlCtx.sql("CREATE TEMPORARY TABLE SOLUTION_ID_WITH_ENDING_VERTEX USING org.wso2.carbon.analytics.spark.core.sources.AnalyticsRelationProvider "
                 + "OPTIONS ("
                 + "tenantId \""
                 + tenantId
@@ -80,9 +80,9 @@ public class SharedSC {
                 + "schema \""
                 + tableSchema + "\"" + ")");
 
-        DataFrame dataFrame = sqlCtx.sql("select * from SOLUTION_IDS_WITH_ENDING_VERTEX");
+        DataFrame dataFrame = sqlCtx.sql("select * from SOLUTION_ID_WITH_ENDING_VERTEX");
         // Additional auto-generated column "_timestamp" needs to be dropped because it is not in the schema.
-        dataFrame = dataFrame.drop("_timestamp").drop("solution_id");
+        dataFrame = dataFrame.drop("_timestamp");
         return dataFrame;
     }
 

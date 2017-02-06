@@ -7,25 +7,17 @@ import graphx.serializableFunction1.SerializableFunction1;
 import graphx.sharedSparkContext.SharedSC;
 import graphx.sharedSparkContext.SoleSc;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.graphx.*;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.RowFactory;
 import org.apache.spark.storage.StorageLevel;
-import org.apache.spark.api.java.function.Function;
-import scala.Function3;
-import scala.Function1;
 import scala.Tuple2;
-import scala.collection.Iterator;
 import scala.reflect.ClassTag;
 import scala.reflect.ClassTag$;
 import scala.runtime.BoxedUnit;
-import scala.util.parsing.combinator.testing.Str;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -39,13 +31,13 @@ public static void findSolutions(){
 
         DataFrame edge_dataframe = sc.getEdgeDataFrame("EDGE_RDD", -1234, sc.getSparkContext());
         DataFrame vertex_dataframe = sc.getVertexDataFrame("VERTEX_RDD", -1234, sc.getSparkContext());
-        DataFrame solution_id = sc.getVertexDataFrame("SOLUTION_IDS_WITH_ENDING_VERTEX", -1234, sc.getSparkContext());
+        DataFrame solution_id = sc.getVertexDataFrame("SOLUTION_ID_WITH_ENDING_VERTEX", -1234, sc.getSparkContext());
 
         //DataFrame vertex_dataframe = SoleSc.getVertexDataFrame();
-       // DataFrame edge_dataframe = SoleSc.getEdgeDataFrame();
+        //DataFrame edge_dataframe = SoleSc.getEdgeDataFrame();
         //DataFrame solution_id = SoleSc.getSolutionsWithVertex();
 
-        //DataFrame final_vertex_dataframe = vertex_dataframe.join(solution_id,vertex_dataframe.col("vertex").equalTo(solution_id.col("ending_vertex")),"left").drop("ending_vertex");
+        DataFrame final_vertex_dataframe = vertex_dataframe.join(solution_id,vertex_dataframe.col("vertex").equalTo(solution_id.col("ending_vertex")),"left").drop("ending_vertex");
         //System.out.println(final_vertex_dataframe.collectAsList().toString());
 
 
@@ -55,7 +47,7 @@ public static void findSolutions(){
                 return RowFactory.create(rowLongTuple2._1().getString(0), rowLongTuple2._2());
             }
         };
-        JavaRDD<Row> ff = vertex_dataframe.javaRDD().zipWithIndex().map(myFunc);
+        JavaRDD<Row> ff = final_vertex_dataframe.javaRDD().zipWithIndex().map(myFunc);
         //System.out.print(ff.toString());
 
         //convert JavaRdd<Row> to JavaRdd<Tuple2<Long,String>>
@@ -110,7 +102,7 @@ public static void findSolutions(){
         ClassTag<Tuple2<String,String>> classtagtuple2  = ClassTag$.MODULE$.apply(Tuple2.class);
         RDD<Tuple2<String,String>> solution_ids = solution_id.map(new SerializableFunction1<Row,Tuple2<String,String>>() {
             public Tuple2<String,String> apply(Row v1){
-                return new Tuple2<String, String>(v1.getString(1),v1.getString(2));
+                return new Tuple2<String, String>(v1.getString(0),v1.getString(1));
             }
         },classtagtuple2);
 
@@ -133,9 +125,9 @@ public static void findSolutions(){
         System.out.print(e.toString());
     }
 }
-/*public  static  void main(String[] ss){
+public  static  void main(String[] ss){
     FirstGraph.findSolutions();
-}*/
+}
 
 
 //map Long id with the edge rdd sources and destinations

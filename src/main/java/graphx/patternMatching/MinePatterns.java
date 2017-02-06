@@ -52,8 +52,8 @@ public class MinePatterns {
                 temp.add(str[i]);
                 kk = kk+temp.toString()+"@@@";
                 innerLoop:for(Tuple2<String,String> ids : solutionids){
-                    if(ids._1().trim().equals(str[i+1])){
-                        minedSolutions.add(ids._2());
+                    if(ids._2().trim().equals(str[i+1])){
+                        minedSolutions.add(ids._1());
                         ending_vertex_ids.add(str[i+1]);
                         temp.add(str[i+1]);
                         kk = kk+temp.toString()+"#####";
