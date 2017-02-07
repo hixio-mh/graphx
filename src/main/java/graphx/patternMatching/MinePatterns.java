@@ -8,6 +8,7 @@ import scala.reflect.ClassTag;
 import scala.reflect.ClassTag$;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -47,19 +48,20 @@ public class MinePatterns {
         JsonObject solutions = new JsonObject();
         String kk = "";
 
-        for(int i=0; i<idList.size()-1; i++){
+        outerLoop:for(int i=0; i<idList.size()-1; i++){
             if(this.getMappingNeighbour(idList.get(i),idList.get(i+1))){
                 temp.add(str[i]);
-                kk = kk+temp.toString()+"@@@";
+                kk = kk+str[i]+"-";
                 innerLoop:for(Tuple2<String,String> ids : solutionids){
                     if(ids._2().trim().equals(str[i+1])){
-                        minedSolutions.add(ids._1());
-                        ending_vertex_ids.add(str[i+1]);
-                        temp.add(str[i+1]);
-                        kk = kk+temp.toString()+"#####";
-                        minedPatterns.add(temp.toString());
-                        temp.remove(temp.size()-1);
-                        break innerLoop;
+                        if(ids._1().contains(kk+str[i+1])){
+                            minedSolutions.add(ids._1());
+                            ending_vertex_ids.add(str[i+1]);
+                            temp.add(str[i+1]);
+                            minedPatterns.add(temp.toString());
+                            temp.remove(temp.size()-1);
+                            break innerLoop;
+                        }
                     }
                 }
                 continue;
@@ -67,7 +69,7 @@ public class MinePatterns {
             else{
                 temp.clear();
                 kk = kk+">>>>";
-                continue;
+                break outerLoop;
             }
         }
         String minedSolutionsJson = new Gson().toJson(minedSolutions);
